@@ -2,3 +2,5 @@
 
 This is my Minor Project.
 Built using: Node.js, Express, MongoDB.
+
+Database used is MongoDB.
