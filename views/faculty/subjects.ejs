@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Subjects — SOET Portal</title>
+  <link href="/css/main.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    body { background: #f0f4ff; font-family: 'Segoe UI', sans-serif; }
+    .subject-card {
+      background: white; border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.07);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      padding: 20px 24px; margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+    .subject-card:hover {
+      transform: translateX(4px);
+      box-shadow: 0 6px 20px rgba(0,51,153,0.1);
+    }
+    .code-tag {
+      background: #eef2ff; color: #003399;
+      font-weight: 700; font-size: 0.75rem;
+      padding: 4px 12px; border-radius: 8px;
+    }
+    .sem-tag {
+      background: #f0f4ff; color: #003399;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 6px;
+    }
+    .pill-mat { background: #e8f5e9; color: #2e7d32; font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .pill-pyq { background: #fff3e0; color: #e65100; font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  </style>
+</head>
+<body data-authenticated="true">
+
+<%- include('../partials/facultyNavbar') %>
+
+<div class="container-fluid px-3 px-md-4 py-4" style="max-width:1000px; margin:0 auto;">
+
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div style="width:48px;height:48px;background:#eef2ff;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#003399;">
+      <i class="bi bi-journal-richtext"></i>
+    </div>
+    <div>
+      <h4 class="fw-bold mb-0">
+        <%= user.role === 'admin' ? 'All Subjects' : 'My Assigned Subjects' %>
+      </h4>
+      <div class="text-muted" style="font-size:0.82rem;">
+        <%= subjects.length %> subject<%= subjects.length !== 1 ? 's' : '' %> found
+      </div>
+    </div>
+    <a href="/faculty/dashboard" class="btn btn-sm ms-auto"
+       style="background:#f0f4ff;color:#003399;border:2px solid #e0e7ff;border-radius:10px;font-weight:600;">
+      <i class="bi bi-arrow-left me-1"></i>Dashboard
+    </a>
+  </div>
+
+  <% if (subjects.length === 0) { %>
+    <div class="text-center py-5" style="background:white;border-radius:16px;">
+      <i class="bi bi-journal-x fs-1 text-muted d-block mb-3"></i>
+      <h5 class="text-muted">No subjects assigned yet</h5>
+    </div>
+  <% } else { %>
+    <% let lastSem = null; %>
+    <% subjects.forEach(subject => { %>
+      <% if (subject.semester !== lastSem) { %>
+        <% lastSem = subject.semester; %>
+        <div class="text-muted fw-semibold mb-2 mt-3" style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.5px;">
+          <i class="bi bi-bookmark-fill me-1" style="color:#003399;"></i>Semester <%= subject.semester %>
+        </div>
+      <% } %>
+      <div class="subject-card d-flex align-items-center gap-3 flex-wrap">
+        <div class="flex-grow-1">
+          <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+            <span class="code-tag"><%= subject.subjectCode %></span>
+            <span class="sem-tag">Sem <%= subject.semester %></span>
+            <span style="font-size:0.7rem;color:#999;background:#f5f5f5;padding:2px 8px;border-radius:6px;">
+              <%= subject.type %>
+            </span>
+            <span style="font-size:0.7rem;color:#666;background:#f0f4ff;padding:2px 8px;border-radius:6px;">
+              <%= subject.credits %> credits
+            </span>
+          </div>
+          <div class="fw-semibold" style="font-size:0.93rem;color:#1a1a1a;"><%= subject.name %></div>
+          <div class="d-flex gap-2 mt-2 flex-wrap">
+            <span class="pill-mat"><i class="bi bi-file-earmark-text me-1"></i><%= subject.materialCount %> Materials</span>
+            <span class="pill-pyq"><i class="bi bi-file-earmark-pdf me-1"></i><%= subject.pyqCount %> PYQs</span>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="/faculty/upload/material?subject=<%= subject.subjectCode %>"
+             class="btn btn-sm fw-semibold"
+             style="background:#eef2ff;color:#003399;border:none;border-radius:8px;font-size:0.8rem;">
+            <i class="bi bi-upload me-1"></i>Material
+          </a>
+          <a href="/faculty/upload/pyq?subject=<%= subject.subjectCode %>"
+             class="btn btn-sm fw-semibold"
+             style="background:#fff3e0;color:#e65100;border:none;border-radius:8px;font-size:0.8rem;">
+            <i class="bi bi-file-earmark-plus me-1"></i>PYQ
+          </a>
+        </div>
+      </div>
+    <% }); %>
+  <% } %>
+
+  <div class="text-center text-muted py-4 mt-2" style="font-size:0.75rem;border-top:1px solid #e0e7ff;">
+    SOET Resource Portal &copy; <%= new Date().getFullYear() %> · KR Mangalam University
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>
