@@ -218,6 +218,46 @@ router.get('/azure/callback', async (req, res) => {
   }
 });
 
+// ---------------------------------------------------------
+// FORGOT PASSWORD LOGIC
+// ---------------------------------------------------------
+
+// @desc    Render Forgot Password Page
+router.get('/forgot-password', (req, res) => {
+    res.render('auth/forgot-password', { error: null, message: null });
+});
+
+// @desc    Handle Forgot Password Submission
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+        const faculty = await Faculty.findOne({ email: email.toLowerCase().trim() });
+        
+        if (!faculty) {
+            // We use a generic message for security so hackers don't know who has an account
+            return res.render('auth/forgot-password', { 
+                error: null, 
+                message: 'If an account exists with that email, a reset link has been sent.' 
+            });
+        }
+
+        // Generate a simple reset token (In a real app, use crypto)
+        const resetToken = Math.random().toString(36).slice(-8);
+        
+        // Log it to console for now (Contribution: simulate email sending)
+        console.log(`[SECURITY] Password reset request for: ${email}`);
+        console.log(`[SECURITY] Reset Link: http://localhost:3000/auth/reset-password/${resetToken}`);
+
+        res.render('auth/forgot-password', { 
+            error: null, 
+            message: 'Check your console (simulated email) for the reset link!' 
+        });
+    } catch (err) {
+        console.error(err);
+        res.render('auth/forgot-password', { error: 'Server error. Try again.', message: null });
+    }
+});
+
 // ─────────────────────────────────────
 // GET /auth/logout
 // ─────────────────────────────────────
