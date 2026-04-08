@@ -436,7 +436,7 @@ npm run seed     # Seed database with dummy data
 | Member | Role |
 |--------|------|
 | [Zaid] | Backend Lead & Database Architect |
-| [Aamir, Mankameshwara] | Authentication & Security Engineer |
+| [Aamir, Mankameshwar Mishra] | Authentication & Security Engineer |
 | [Tushar] | Student Portal Developer |
 | [Devi] | Faculty Portal & Upload System |
 | [Hitesh] | Frontend & UX Designer |
